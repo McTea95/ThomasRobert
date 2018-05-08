@@ -35,7 +35,7 @@ public class AppTest
     public void testApp()
     {
         Utils utils = new Utils();
-        CheckResult result = utils.loadClass("de.htw.ai.kbe.App2");
+        CheckResult result = utils.loadClass("de.htw.ai.kbe.AppT");
         Assert.assertTrue(result.getMethodCount() == 5);
         Assert.assertTrue(result.getRunMeMethodCount() == 2);        
         Assert.assertTrue(result.getNotInvokeableMethodNames().contains("methodE"));

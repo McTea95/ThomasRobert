@@ -122,7 +122,15 @@ public class Utils {
 							notInvokeable.add(methods[i].getName());	//@RunMe-Methoden mit Parametern gelten auch als NotInvokeable
 						}
 						else {
-							System.out.println(methods[i].invoke(null));	//Wenn die Methode ausgeführt werden kann wird sie mit "invoke" aufgerufen
+							try {
+								methods[i].invoke(null); 	//Wenn die Methode ausgeführt werden kann wird sie mit "invoke" aufgerufen
+								//System.out.println(methods[i].invoke(null));
+							}
+							catch(InvocationTargetException e){ //Falls die Methode auf die invoke angewendet wird eine Exception wirft wird diese ausgegeben und die Methode als NotInvokeableMethod gewertet
+								notInvokeable.add(methods[i].getName());	//@RunMe-Methoden, die nicht ausgeführt werden konnten gelten auch als NotInvokeable
+								System.out.println(e.getCause());
+							}
+							//System.out.println(methods[i].invoke(null));	
 						}
 						methodNames.add(methods[i].getName());	//Hinzufügen des Methodennamens für alle @RunMe-Methoden
 						count++;	//Zähler für @RunMe-Methoden erhöhen
@@ -140,8 +148,6 @@ public class Utils {
 		catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
