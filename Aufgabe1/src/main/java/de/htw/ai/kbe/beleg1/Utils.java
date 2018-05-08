@@ -68,7 +68,9 @@ public class Utils {
 								//Aufruf von loadClass um die Klasse im Key "RunMe" auszulesen
 								CheckResult results = loadClass(properties.getProperty("RunMe"));	//CheckResult ist eine selbsterstellte Klasse, in welche die Ergebnisse gespeichert werden (Methodenzählung, Namen, etc)	
 								if(outputFileExists){		//Wenn eine Output-File vom User angegeben wurde wird die createReportFile-function genutzt
-									createReportFile(getOutputFilename(), results);
+									if(createReportFile(getOutputFilename(), results)){
+										System.out.println(outputFilename + " wurde erstellt.");
+									}
 								}
 								else {					//Ohne Output-File angegeben wird alles in der Konsole ausgegeben (printReport-function)
 									printReport(results);
@@ -95,7 +97,7 @@ public class Utils {
 	}
 	
 	//Funktion zum Laden einer Klasse zur Laufzeit, gibt die Ergebnisse der Methoden-Invokes und Zählungen in dem CheckResult-Objekt zurück
-	private CheckResult loadClass(String classpath)
+	public CheckResult loadClass(String classpath)
 	{
 		File file = new File("./classesToLoad/");
 
@@ -162,7 +164,7 @@ public class Utils {
 	}
 	
 	//Methode zum Erstellen der Output.txt-Datei
-	public void createReportFile(String outputFilename, CheckResult results){	//OutputFilename vom User festgelegt, results sind die Ergebnisse der loadClass-Methode (Anzahl der Methoden, Anzahl der @RunMe-Methoden, Liste mit allen @RunMe-Methodennamen, Liste mit allen NotInvokeable-Methodennamen)
+	public boolean createReportFile(String outputFilename, CheckResult results){	//OutputFilename vom User festgelegt, results sind die Ergebnisse der loadClass-Methode (Anzahl der Methoden, Anzahl der @RunMe-Methoden, Liste mit allen @RunMe-Methodennamen, Liste mit allen NotInvokeable-Methodennamen)
 		PrintWriter writer;
 		ArrayList<String> methodNames = results.getRunMeMethodNames();
 		ArrayList<String> notInvokeableMethodNames = results.getNotInvokeableMethodNames();
@@ -179,12 +181,13 @@ public class Utils {
 				writer.println("\t" + notInvokeableMethodNames.get(j));
 			}
 	    	writer.close();
-	    	System.out.println(outputFilename + " wurde erstellt.");
+	    	return true;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
+		return false;
 	}
 	
 	//Ausgabe der Ergebnisse in der Konsole
