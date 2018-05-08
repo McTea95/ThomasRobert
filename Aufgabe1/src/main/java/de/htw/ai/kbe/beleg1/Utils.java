@@ -108,9 +108,12 @@ public class Utils {
 		    // Create a new class loader with the directory
 		    ClassLoader cl = new URLClassLoader(urls);
 
-			Class app = cl.loadClass(classpath);
+			Class app;
+			try {
+				app = Class.forName(classpath).newInstance().getClass();
 			//Class app = Class.forName(classpath);	//In der PropertiesFile angegebene auszuführende Klasse wird aufgerufen
 			Method[] methods = app.getDeclaredMethods();	//Alle Methoden die nur innerhalb der Klasse erstellt sind (keine geerbten) werden im Array methods gespeichert
+			Method.setAccessible(methods, true);
 			int count = 0;		//Variable zum Zählen der @RunMe-Methoden
 			ArrayList<String> notInvokeable = new ArrayList<String>();	//Alle Namen der Nicht-ausführbaren Methoden
 			ArrayList<String> methodNames = new ArrayList<String>();	//Alle Namen von allen Methoden in der Klasse
@@ -123,7 +126,7 @@ public class Utils {
 						}
 						else {
 							try {
-								methods[i].invoke(null); 	//Wenn die Methode ausgeführt werden kann wird sie mit "invoke" aufgerufen
+								methods[i].invoke(Class.forName(classpath).newInstance()); 	//Wenn die Methode ausgeführt werden kann wird sie mit "invoke" aufgerufen
 								//System.out.println(methods[i].invoke(null));
 							}
 							catch(InvocationTargetException e){ //Falls die Methode auf die invoke angewendet wird eine Exception wirft wird diese ausgegeben und die Methode als NotInvokeableMethod gewertet
@@ -141,6 +144,10 @@ public class Utils {
 			}
 			CheckResult res = new CheckResult(methods.length, count, methodNames, notInvokeable);	//Ergebnis-Objekt erzeugen
 			return res;
+			} catch (InstantiationException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		} catch (ClassNotFoundException e) {
 			System.out.println("Klasse '" + classpath + "' konnte nicht gefunden werden.");
 			e.printStackTrace();
