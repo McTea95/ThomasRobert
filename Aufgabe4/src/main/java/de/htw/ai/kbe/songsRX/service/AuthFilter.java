@@ -10,16 +10,19 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.Provider;
 
+import de.htw.ai.kbe.songsRX.storage.SongListI;
 import de.htw.ai.kbe.songsRX.storage.UserI;
 
 @Provider
 public class AuthFilter implements ContainerRequestFilter{
 
 	private UserI useri;
+	private SongListI sgI;
 	
 	@Inject
-	public AuthFilter(UserI useri){
+	public AuthFilter(UserI useri, SongListI sgI){
 		this.useri = useri;
+		this.sgI = sgI;
 	}
 	
 	@Override
@@ -33,6 +36,13 @@ public class AuthFilter implements ContainerRequestFilter{
 		
 			if(!useri.tokenExists(authToken)) {
 				throw new WebApplicationException(Status.UNAUTHORIZED);
+			}
+			
+			if(!containerRequest.getUriInfo().getPath().contains(userId)){
+				sgI.makePrivate();
+			}
+			else {
+				sgI.makePublic();
 			}
 		}
 	}

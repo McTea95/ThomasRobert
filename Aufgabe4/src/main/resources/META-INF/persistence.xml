@@ -14,6 +14,7 @@
 value="jdbc:mysql://db.f4.htw-berlin.de:3306/_s0555313__SongsDB"/>
 <property name="javax.persistence.jdbc.user" value="s0555313"/>
 <property name="javax.persistence.jdbc.password" value="12345678"/>
+<property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
 <property name="hibernate.show_sql" value="true"/>
 <property name="hibernate.format_sql" value="false"/>
 <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>

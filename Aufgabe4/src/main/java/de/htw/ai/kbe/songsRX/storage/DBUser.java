@@ -89,6 +89,7 @@ public class DBUser implements UserI{
 		
 		EntityManager em = emf.createEntityManager();
 		q = em.createQuery("SELECT u FROM User u");
+		@SuppressWarnings("unchecked")
 		List<User> userList = q.getResultList();
 		
 		for(int i=0; i<userList.size(); i++) {
